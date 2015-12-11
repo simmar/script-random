@@ -1,95 +1,70 @@
 module.exports = function (grunt) {
 
-    // Load plugins
-    grunt.loadNpmTasks('grunt-browser-sync');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-compress');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-postcss');
-    grunt.loadNpmTasks('grunt-tinypng');
-    grunt.loadNpmTasks('grunt-sass');
 
-    // Ressources path
-    var imagePath = './img/';
-    var jsPath = './js/';
+    // 1. Chargement des packages
+    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-postcss');
+    grunt.loadNpmTasks('grunt-browser-sync');
+    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-php2html');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+
+
+    // 2. Chemins
     var cssPath = './css/';
     var scssPath = './css/';
+    var imagePath = './img/';
+    var jsPath = './js/';
+    var buildPath = './build_html/';
 
-    //All configuration goes here
+    // 3. Configuration des taches Grunt
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
 
-
-        // Concat javascript files
-        concat: {
-            vendors: {
-                src: [
-                    jsPath + 'vendor/jquery.js'
-                ],
-                dest: jsPath + 'build/vendors.js'
-            },
-            main: {
-                src: [
-                    jsPath + 'libs/console.js',
-                    jsPath + 'libs/cnilkies.js',
-                    jsPath + 'libs/scrollto.js',
-                    jsPath + 'libs/socialsharing.js',
-                    jsPath + 'base.js'
-                ],
-                dest: jsPath + 'build/main.js'
-            }
-        },
-
-        // Uglify javascript files
-        uglify: {
-            libs: {
-                src: jsPath + 'build/vendors.js',
-                dest: jsPath + 'build/vendors.min.js'
-            },
-            main: {
-                src: jsPath + 'build/main.js',
-                dest: jsPath + 'build/main.min.js'
-            }
-        },
-
-        // Compile sass files
+        // Compile SASS to CSS
         sass: {
-            dist: {
-                options: {
-                    style: 'compressed',
-                    noCache: true,
-                    sourcemap: 'none'
-                },
-                expand: true,
-                cwd: scssPath,
-                src: ['all.scss'],
-                dest: cssPath,
-                ext: '.css'
-            },
+            // Pour le dev
             dev: {
                 options: {
-                    style: 'expanded',
-                    debugInfo: false,
+                    outputStyle: 'expanded',
+                    indentType: 'space',
+                    indentWidth: 4,
+                    debugInfo: true,
                     lineNumbers: false,
-                    update: true // improve compile speed
+                    sourceMap: true,
+                    outFile: null
                 },
-                expand: true,
-                cwd: scssPath,
-                src: ['all.scss'],
-                dest: cssPath,
-                ext: '.css'
+                files: [{
+                    expand: true,
+                    cwd: scssPath,          // dossier source
+                    src: ['**/*.scss'],     // extension source
+                    dest: cssPath,          // dossier destination
+                    ext: '.css'             // extansion destination
+                }]
+            },
+            // Pour la prod
+            prod: {
+                options: {
+                    outputStyle: 'compressed',
+                    sourceMap: true,
+                    outFile: null
+                },
+                files: [{
+                    expand: true,
+                    cwd: scssPath,
+                    src: ['**/*.scss'],
+                    dest: cssPath,
+                    ext: '.css'
+                }]
             }
         },
 
         // PostCSS for autoprefixer
-        postcss: {
+        postcss :{
             options: {
                 processors: [
                     require('autoprefixer')({browsers: ['> 1%']})
-                ],
-                map: true
+                ]
             },
             multiple_files: {
                 expand: true,
@@ -99,52 +74,7 @@ module.exports = function (grunt) {
             }
         },
 
-        // JS hint
-        jshint: {
-            files: [jsPath+'/**/*.js', '!'+jsPath+'/vendor/**/*.js'],
-            options: {
-                jshintrc: '.jshintrc'
-            }
-        },
-
-        // Make a zipfile of static files
-        compress: {
-            main: {
-                options: {
-                    archive: 'archive.zip'
-                },
-                files: [
-                    {
-                        src: [
-                            // add html files if needed
-                            cssPath + 'all.css',
-                            jsPath + '{,*/}*.js',
-                            imagePath + '{,*/}*'
-                        ],
-                        dest: '/',
-                        filter: 'isFile'}
-                ]
-            }
-        },
-
-        // Compress PNG : Free for 500 images per month (https://tinypng.com/developers)
-        tinypng: {
-            options: {
-                apiKey: "1mIlF58_aSuMWsXBkkcAAQ_-Ey7wZ7ci",
-                    checkSigs: false,
-                    sigFile: 'file_sigs.json',
-                    summarize: true,
-                    showProgress: true,
-                    stopOnImageError: true
-            },
-            compress: {
-                expand: true,
-                    src:  imagePath + '**/*.png',
-                    ext: '.png'
-            }
-        },
-
-        // Watch changes
+        // watch changes
         watch: {
             options: {
                 livereload: true // http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-
@@ -152,51 +82,91 @@ module.exports = function (grunt) {
             configFiles: {
                 files: ['Gruntfile.js']
             },
-            markup: {
+            markup:             {// Pour les fichiers php
                 files: ['**/*.php'],
                 options: {
                     spawn: false
                 }
             },
             scripts: {
-                files: [jsPath + '**/*.js'],
+                files: [jsPath + '/**/*.js', '!' + jsPath + 'build/**/*.js'],
                 options: {
                     spawn: false
                 }
             },
             css: {
                 files: [scssPath + '**/*.scss'],
-                tasks: ['sass:dev','postcss'],
+                tasks: ['sass:dev', 'postcss'], // sur le watch, on relance la complile sass:dev et le postcss pour autoprefixer
                 options: {
                     spawn: false
                 }
             }
         },
 
-        // Browser Synch
-        browserSync: {
-            bsFiles: {
-                src : [
-                    '**/*.php',
-                    cssPath + '**/*.css',
-                    jsPath + '**/*.js'
+        // make a zipfile of static files
+        compress: {
+            main: {
+                options: {
+                    archive: 'archive.zip'
+                },
+                files: [
+                    {
+                        src: [buildPath + '**/*'],
+                        dest: '/'
+                    }
                 ]
-            },
+            }
+        },
+
+        // convert php to html
+        php2html: {
             options: {
-                watchTask: true,
-                proxy: 'localhost'
+                // Task-specific options go here.
+                processLinks: true,
+                htmlhint:{
+                    'tagname-lowercase': false,
+                    'attr-lowercase': false,
+                    'attr-value-double-quotes': false,
+                    'doctype-first': false,
+                    'tag-pair': false,
+                    'spec-char-escape': false,
+                    'id-unique': false,
+                    'src-not-empty': false
+                }
+            },
+            dist:{
+                files: [
+                    {
+                        expand: true,
+                        cwd: './',
+                        src: ['*.php'],
+                        dest: buildPath,
+                        ext: '.html'
+                    }
+                ]
+            }
+        },
+
+        // Copy all static files to build
+        copy: {
+            main: {
+                files: [
+                    // includes files within path
+                    {expand: true, src: [cssPath + 'all.css'], dest: buildPath, filter: 'isFile'},
+                    {expand: true, src: [jsPath + '{,*/}*'], dest: buildPath, filter: 'isFile'},
+                    {expand: true, src: [imagePath + '{,*/}*'], dest: buildPath, filter: 'isFile'}
+                ]
             }
         }
 
     });
 
-    // Tasks
+    // 4. Définition des tâches Grunt
     grunt.registerTask('default', ['watch']);
-    grunt.registerTask('css', ['sass:dev','postcss']);
     grunt.registerTask('synch', ['browserSync', 'watch']);
-    grunt.registerTask('build', ['concat', 'uglify', 'sass:dist','postcss']);
+    grunt.registerTask('build', ['sass:prod','postcss' ]);
     grunt.registerTask('zip', ['compress']);
-    grunt.registerTask('js', ['jshint']);
-    grunt.registerTask('png', ['tinypng']);
+    grunt.registerTask('html', ['php2html:dist']);
+    grunt.registerTask('copi', ['copy']);
 
 };
