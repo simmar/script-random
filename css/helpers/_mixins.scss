@@ -1,0 +1,37 @@
+// = MIXINS //
+
+// FontFace
+// Example usage: @include fontface(typo);
+// Tip : name all your font files the same
+@mixin fontface($family, $weight: normal, $style: normal){
+    @font-face{
+        font-family: '#{$family}';
+        src:url('font/#{$family}.eot');
+        src:url('font/#{$family}.eot?#iefix') format('embedded-opentype'),
+            url('font/#{$family}.svg##{$family}') format('svg'),
+            url('font/#{$family}.woff') format('woff'),
+            url('font/#{$family}.ttf') format('truetype');
+        font-weight: $weight;
+        font-style: $style;
+    }
+}
+
+// Convert px to em
+// Example usage : font-size: pxtoem(12, 14); => 12 = size you want, 14 = size of the parent
+@function pxtoem($target, $context){
+    @return ($target/$context)+0em;
+}
+
+// opacity mixin
+// Example usage : @include opacity(0.5);
+@mixin opacity ($opacity) {
+    opacity: $opacity;
+    filter: alpha(opacity=$opacity*100);
+}
+
+// rgba mixin
+// Example usage : @include rgba(#fff, 0.5);
+@mixin rgba ($color, $opacity) {
+    background-color: $color;
+    background-color: rgba($color, $opacity);
+}

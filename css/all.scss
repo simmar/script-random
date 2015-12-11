@@ -1,0 +1,15 @@
+/*------------------------------------------------------------------------------
+    CSS Document (http://www.w3.org/Style/CSS/)
+
+    project:    project name
+    created:    YYYY-MM-DD
+    author:     johdoe
+
+----------------------------------------------------------------------------- */
+
+@import 'helpers/variables';
+@import 'helpers/mixins';
+@import 'normalize'; // boilerplate
+@import 'vendors/fw'; // framework, OOCSS and more
+@import '_base'; // main css styles
+

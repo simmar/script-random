@@ -1,0 +1,33 @@
+// = VARIABLES //
+
+// COLOR VALUES
+$colors: (
+    "white" : #ffffff,
+    "dark"  : #000000
+);
+
+/* Foreground colors */
+// @example use .clr-white, .clr-black  in html */
+@each $color-name, $color-val in $colors {
+    .clr-#{$color-name} {
+        color: $color-val;
+    }
+}
+
+
+/* Background colors  */
+// @example use .bg-white, .bg-black  in html */
+@each $color-name, $color-val in $colors {
+    .bg-#{$color-name} {
+        background-color: $color-val;
+    }
+}
+
+
+/* Border colors  */
+// @example use .bdr-white, .bdr-black  in html */
+@each $color-name, $color-val in $colors {
+    .brd-#{$color-name} {
+        border-color: $color-val;
+    }
+}
