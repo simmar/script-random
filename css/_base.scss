@@ -62,6 +62,7 @@ a {
 
 /*  =STRUCTURE
 ----------------------------------------------------------------------------- */
+
 .case {
     float: left;
     width: 25%;
@@ -75,7 +76,17 @@ a {
         transform: translateY(0);
         opacity: 1;
     }
-    &:after {
+    &.color-1:after{
+        background: #ff7f78;
+    }&.color-2:after{
+        background: #85AB85;
+    }&.color-3:after{
+        background: #327d85;
+    }&.color-4:after{
+        background: #343434;
+    }
+    &:after ,
+    &:before {
         content: "";
         margin-top: 10px;
         margin-left: 10px;
@@ -84,17 +95,21 @@ a {
         top: 0;
         width:90%;
         height: 90%;
-        background: black;
         cursor: pointer;
         opacity: 1;
         transform: scale(1) rotate(0deg);
-        box-shadow: 10px 10px 5px 0 #656565;
+        box-shadow: 0 0 15px 10px rgba(255, 255, 255, 0.9);
         //transition: top 300ms;
     }
+    &:before {
+        background: none;
+    }
+
     &.active:after {
         transition: all 0.5s;
-        transform: scale(0) rotate(500deg);
-        opacity: 0;
+        content: "";
+        opacity: 0.5;
+        background: black;
     }
     //todo modulo pour autre anim avec top: -200px;
 
@@ -103,7 +118,8 @@ a {
         line-height: 200px;
         text-align: center;
         font-size: 110px;
-        color: #550000;
+        color: rgba(255, 253, 255, 0.67);
+        text-shadow: 0 0 9px rgb(255, 255, 255);
     }
 
     /* Tablette */

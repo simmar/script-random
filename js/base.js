@@ -47,18 +47,32 @@ pm.random = function () {
 
         }
 
-
+        var prev_color = null;
         for (var index = 0; index < values.length; index++) {
             var obj = values[index];
             var $case = $('<div class="case"><p>' + obj + '</p></div>');
+
+
             $('#page').append($case);
+
+            // verifie que la couleur de la case d'avant n'est pas la meme que celle que tu vas écrire
+            // sinon, on relance le dé autant de fois que necessaire
+            var new_color = getRandomInt(1, 4); // 4
+            while (new_color == prev_color){
+                console.log('relance le dé');
+                new_color = getRandomInt(1, 4);  //4
+            }
+            prev_color = new_color; // 4
+
+
+
             //closure permet de manipuler chaque élément
-            (function(index, $case){
+            (function(index, $case, color){
                 var delay = 100 + (index * 100);
                 setTimeout(function () {
-                    $case.addClass('anim');
+                    $case.addClass('anim color-' + color);
                 }, delay);
-            })(index, $case);
+            })(index, $case, new_color); // fonction autoexecutée
 
         }
 
