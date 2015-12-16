@@ -33,8 +33,7 @@ a {
     margin:0 auto;
 }
 #page {
-    max-width: 960px;
-    margin: 0 auto;
+    padding: 20px;
 
     /* Tablette */
     @media screen and (max-width: 959px) {
@@ -62,11 +61,54 @@ a {
 
 /*  =STRUCTURE
 ----------------------------------------------------------------------------- */
+.inscription{
+    width: 25%;
+    float: left;
+    padding-right: 20px;
+    margin-top: 200px;
+    display: none;
+    &.active{
+        display: block;
+    }
+    Label{
+        font-size: pxtoem(46,16);
+        color: black;
+        font-family: georgia, arial,sans-serif;
+        text-align: center;
+        display: block;
+    }
+    .form-text{
+        width: 100%;
+        height: 40px;
+        text-align: center;
+        margin-bottom: 20px;
+        &::-webkit-input-placeholder {
+            color: red;
+            text-align: center;
+            font-size: pxtoem(20,16);
+            height: 50px;
+        }
+    }
+    #affichageValue{
+        font-size: pxtoem(40,16);
+        color: #fff;
+    }
+    .affiche{
+        width: 100%;
+        height: 40px;
+    }
+}
 
+
+
+.block-case{
+    width: 75%;
+    float: right
+}
 .case {
     float: left;
-    width: 25%;
-    height: 200px;
+    width: 20%;
+    height: 215px;
     overflow: hidden;
     position: relative;
     transition: 125ms;

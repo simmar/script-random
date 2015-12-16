@@ -27,6 +27,9 @@ pm.random = function () {
     var max = 20;
     var min = 1;
 
+    var $blockCase = $('.block-case');
+
+
     var ChoiceGift = function () {
 
         for (var i = min; values.length < max; i++) {
@@ -48,23 +51,21 @@ pm.random = function () {
         }
 
         var prev_color = null;
+
         for (var index = 0; index < values.length; index++) {
             var obj = values[index];
-            var $case = $('<div class="case"><p>' + obj + '</p></div>');
+            var $case = $('<div class="case"><p class="number">' + obj + '</p></div>');
 
+            $blockCase.append($case);
 
-            $('#page').append($case);
 
             // verifie que la couleur de la case d'avant n'est pas la meme que celle que tu vas écrire
             // sinon, on relance le dé autant de fois que necessaire
             var new_color = getRandomInt(1, 4); // 4
             while (new_color == prev_color){
-                console.log('relance le dé');
                 new_color = getRandomInt(1, 4);  //4
             }
             prev_color = new_color; // 4
-
-
 
             //closure permet de manipuler chaque élément
             (function(index, $case, color){
@@ -76,16 +77,51 @@ pm.random = function () {
 
         }
 
-
         $('#JS_random').remove();
+        $('.inscription').addClass('active');
     };
 
     // Init form validation
     $('#JS_random').on('click', ChoiceGift);
 
-
     this.num = values;
+
+    var recupInput = function(){
+        event.preventDefault();
+
+        var $form =         $('.form-recup');
+        var $input =        $form.find('.form-text');//input
+        var inputValue =    $input.val();//input value
+
+        var $inside = $form.find('#affichageValue');
+
+        var populateStorage = function(){
+
+            if(localStorage.getItem($input)) {
+                $inside.html('<p>Your Name is ' + inputValue + ' et tu as fais</p>');
+
+            } else {
+                alert("sessionStorage n'est pas supporté");
+            }
+
+            localStorage.setItem('first name', inputValue);
+        };
+        $inside.html = populateStorage();
+
+    };
+
+    var $button = $('.affiche');
+    $button.on('click', recupInput);
+
+    //$blockCase.on('click', '.case', function () {
+    //
+    //    $(this).addClass('toto');
+    //    console.log('new_value', new_value);
+    //    console.log($('.case').find('p').text());
+    //});
+
 };
+
 
 /*  =WINDOW.ONLOAD
  ----------------------------------------------------------------------------- */
@@ -95,7 +131,10 @@ $(d).ready(function () {
 
 
     $('body').on('click', '.case', function () {
+
         $(this).addClass('active');
+
+
     });
 
 });
