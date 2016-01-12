@@ -8,20 +8,14 @@
         </div>
 
         <form action="#" method="get" class="form form-recup posr inscription">
-            <label for="essai">Précisez votre nom</label>
+            <label for="essai">Précisez votre nom <br><span>3ere lettres</span></label>
             <input id="name"
                    name="name"
                    type="text"
                    class="form-text">
 
-            <div class="button">
-                <button type="button" class="affiche">affiche</button>
-                <!--type button ne soumet pas au formulaire -->
-            </div>
-
-            <div id="affichageValue">
-
-            </div>
+            <p class="scores">SCORES</p>
+            <div id="affichageValue"></div>
         </form>
 
         <div class="block-case"></div>

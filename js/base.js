@@ -29,24 +29,20 @@ pm.random = function () {
 
     var $blockCase = $('.block-case');
 
-
     var ChoiceGift = function () {
 
         for (var i = min; values.length < max; i++) {
             // sortir une nouvelle valeur
             var new_value = getRandomInt(min, max);
 
-            // vérifier si nouvelle valeur pas déja sortie
+            // vï¿½rifier si nouvelle valeur pas dï¿½ja sortie
             var is_new_value = values.indexOf(new_value) < 0; // true / false
 
             if (is_new_value) {
-                console.log(new_value, 'pas un chiffre sorti');
-
+                //console.log(new_value, 'pas un chiffre sorti');
                 // dans tous les cas on stocke la nouvelle valeur
                 values.push(new_value);
-            } else(
-                console.log(new_value, 'ok c un chiffre sorti')
-            );
+            }
 
         }
 
@@ -54,26 +50,25 @@ pm.random = function () {
 
         for (var index = 0; index < values.length; index++) {
             var obj = values[index];
-            var $case = $('<div class="case"><p class="number">' + obj + '</p></div>');
+            var $case = $('<div class="case" data-number="' + obj + '"><p class="number">' + obj + '</p></div>');
 
             $blockCase.append($case);
 
-
-            // verifie que la couleur de la case d'avant n'est pas la meme que celle que tu vas écrire
-            // sinon, on relance le dé autant de fois que necessaire
+            // verifie que la couleur de la case d'avant n'est pas la meme que celle que tu vas ï¿½crire
+            // sinon, on relance le dï¿½ autant de fois que necessaire
             var new_color = getRandomInt(1, 4); // 4
-            while (new_color == prev_color){
+            while (new_color == prev_color) {
                 new_color = getRandomInt(1, 4);  //4
             }
             prev_color = new_color; // 4
 
-            //closure permet de manipuler chaque élément
-            (function(index, $case, color){
+            //closure permet de manipuler chaque ï¿½lï¿½ment
+            (function (index, $case, color) {
                 var delay = 100 + (index * 100);
                 setTimeout(function () {
                     $case.addClass('anim color-' + color);
                 }, delay);
-            })(index, $case, new_color); // fonction autoexecutée
+            })(index, $case, new_color); // fonction autoexecutï¿½e
 
         }
 
@@ -86,39 +81,33 @@ pm.random = function () {
 
     this.num = values;
 
-    var recupInput = function(){
-        event.preventDefault();
 
-        var $form =         $('.form-recup');
-        var $input =        $form.find('.form-text');//input
-        var inputValue =    $input.val();//input value
+    $blockCase.on('click', '.case', function () {
 
+        //get number
+        var number = $(this).data('number');
+
+        //get name
+        var aScore = JSON.parse(localStorage.getItem('result')) || [];
+        
+        aScore.push({name:$('#name').val(), score:number});// insÃ©rer en fin de tableau
+        localStorage.setItem('result', JSON.stringify(aScore));
+
+        var $form = $('.form-recup');
         var $inside = $form.find('#affichageValue');
 
-        var populateStorage = function(){
+        var html = '';// dÃ©claratiobn de variable type string vide!!
 
-            if(localStorage.getItem($input)) {
-                $inside.html('<p>Your Name is ' + inputValue + ' et tu as fais</p>');
+        for (var key in aScore) {
+            aScore.sort();
+            html += "<p>" + aScore[key].name + " " + aScore[key].score + "</p>"; // ajout du contenu sans Ã©craser les valeurs prÃ©cÃ©dente
 
-            } else {
-                alert("sessionStorage n'est pas supporté");
-            }
+            //html =  html + "<p>" + prop + " " + obj[prop] + "</p>"; // idem que la ligne du dessus
+        }
 
-            localStorage.setItem('first name', inputValue);
-        };
-        $inside.html = populateStorage();
+        $inside.html(html);
 
-    };
-
-    var $button = $('.affiche');
-    $button.on('click', recupInput);
-
-    //$blockCase.on('click', '.case', function () {
-    //
-    //    $(this).addClass('toto');
-    //    console.log('new_value', new_value);
-    //    console.log($('.case').find('p').text());
-    //});
+    });
 
 };
 
@@ -129,12 +118,8 @@ $(d).ready(function () {
 
     pm.random();               // Init cookies cnil banner
 
-
     $('body').on('click', '.case', function () {
-
         $(this).addClass('active');
-
-
     });
 
 });
