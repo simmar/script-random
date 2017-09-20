@@ -43,7 +43,6 @@ pm.random = function () {
                 // dans tous les cas on stocke la nouvelle valeur
                 values.push(new_value);
             }
-
         }
 
         var prev_color = null;
@@ -82,33 +81,58 @@ pm.random = function () {
     this.num = values;
 
 
+    // Au clic sur une vignette on récupere les valeurs du nom et de son score et on l'affiche
     $blockCase.on('click', '.case', function () {
 
         //get number
         var number = $(this).data('number');
 
-        //get name
-        var aScore = JSON.parse(localStorage.getItem('result')) || [];
-        
-        aScore.push({name:$('#name').val(), score:number});// insérer en fin de tableau
-        localStorage.setItem('result', JSON.stringify(aScore));
+        var nameVal = $('#name').val();
 
-        var $form = $('.form-recup');
-        var $inside = $form.find('#affichageValue');
+        if(!nameVal == '' && nameVal.length >= 3) {
 
-        var html = '';// déclaratiobn de variable type string vide!!
+            $blockCase.addClass('active');// add Class for animation
 
-        for (var key in aScore) {
-            aScore.sort();
-            html += "<p>" + aScore[key].name + " " + aScore[key].score + "</p>"; // ajout du contenu sans écraser les valeurs précédente
+            //get name
+            var aScore = JSON.parse(localStorage.getItem('result')) || [];
+            aScore.push({name: nameVal, score: number});// insérer en fin de tableau
 
-            //html =  html + "<p>" + prop + " " + obj[prop] + "</p>"; // idem que la ligne du dessus
+            aScore.sort(function (a, b) {
+                return a.score < b.score;
+            });
+
+            localStorage.setItem('result', JSON.stringify(aScore));
+
+            $(this).addClass('active');
+
+            var $form = $('.form-recup');
+            var $inside = $form.find('#affichageValue');
+
+            var html = '';// déclaration de variable type string pour dire qu'elle est vide!!
+
+            // variable pour afficher et limiter a 5 résultats
+            var length = Math.min(5, aScore.length);
+
+            //boucle pour afficher tt les données du tableau
+            for (var i = 0; i < length; i++) {
+                var obj = aScore[i];
+                html += "<p>" + obj.name + " " + obj.score + "</p>"; // ajout du contenu sans écraser les valeurs précédente
+            }
+
+            $inside.html(html);
+            var displayParticipant = $('#affichageParticipant');
+            displayParticipant.html('Le nombre total de participant est de ' + aScore.length).css({
+                color:'red',
+                'font-size': '24px'
+            });
+            displayParticipant.addClass('active');
+
+            if($(this).hasClass('active')) {
+                $(this).closest('#page').find("input[type=text], textarea").val("");
+            }
+            // todo obliger trois lettres minimum
         }
-
-        $inside.html(html);
-
     });
-
 };
 
 
@@ -116,12 +140,9 @@ pm.random = function () {
  ----------------------------------------------------------------------------- */
 $(d).ready(function () {
 
-    pm.random();               // Init cookies cnil banner
-
-    $('body').on('click', '.case', function () {
-        $(this).addClass('active');
-    });
-
+    pm.random();
+    localStorage.clear();
+    
 });
 
 /* END */

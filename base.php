@@ -8,7 +8,7 @@
         </div>
 
         <form action="#" method="get" class="form form-recup posr inscription">
-            <label for="essai">Précisez votre nom <br><span>3ere lettres</span></label>
+            <label for="essai">Précisez votre nom <br><span>3 lettres</span></label>
             <input id="name"
                    name="name"
                    type="text"
@@ -16,6 +16,7 @@
 
             <p class="scores">SCORES</p>
             <div id="affichageValue"></div>
+            <div id="affichageParticipant"></div>
         </form>
 
         <div class="block-case"></div>
